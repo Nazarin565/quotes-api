@@ -72,50 +72,75 @@ export default {
 </script>
 
 <template>
-  <div class="content">
-    <div class="quotes">
-      <p @click="copyQuote" class="quote" title="copy this quote"><strong>Quote:</strong> {{ quote.quote }}</p>
-      <p><strong>Author:</strong> {{ quote.author }}</p>
-      <p><strong>Category:</strong> {{ quote.category }}</p>
+  <div class="animated-background">
+    <div class="content">
+      <div class="quotes">
+        <p @click="copyQuote" class="quote" title="copy this quote"><strong>Quote:</strong> {{ quote.quote }}</p>
+        <p><strong>Author:</strong> {{ quote.author }}</p>
+        <p><strong>Category:</strong> {{ quote.category }}</p>
+      </div>
+
+      <div>
+        <label for="selectCategory">Choose category of quote: </label>
+        <select v-model="category" id="selectCategory">
+          <option value="">random</option>
+          <option v-for="cat of categories" :key="cat" :value="cat">{{ cat }}
+          </option>
+        </select>
+      </div>
+
+
+      <button class="getQuote" @click="getQuote">Get Quote {{ category ? `with category
+        ${category}` :
+        'Random'
+        }}</button>
+
+      <p class="error" v-if="fetchError">{{ fetchError }}</p>
     </div>
 
-    <div>
-      <label for="selectCategory">Choose category of quote: </label>
-      <select v-model="category" id="selectCategory">
-        <option value="">random</option>
-        <option v-for="cat of categories" :key="cat" :value="cat">{{ cat }}
-        </option>
-      </select>
-    </div>
-
-
-    <button class="getQuote" @click="getQuote">Get Quote {{ category ? `with category
-      ${category}` :
-      'Random'
-      }}</button>
-
-    <p class="error" v-if="fetchError">{{ fetchError }}</p>
+    <ul class="history" v-if="!!historyOfQuotes.length">
+      <strong>History of quotes:</strong>
+      <li v-for="item in historyOfQuotes" :key="item.quote" class="history__item">
+        <p @click="copyQuote" class="quote"><strong>Quote:</strong> {{ item.quote }}</p>
+        <p><strong>Author:</strong> {{ item.author }}</p>
+        <p><strong>Category:</strong> {{ item.category }}</p>
+      </li>
+    </ul>
   </div>
-
-  <ul class="history" v-if="!!historyOfQuotes.length">
-    <strong>History of quotes:</strong>
-    <li v-for="item in historyOfQuotes" :key="item.quote" class="history__item">
-      <p @click="copyQuote" class="quote"><strong>Quote:</strong> {{ item.quote }}</p>
-      <p><strong>Author:</strong> {{ item.author }}</p>
-      <p><strong>Category:</strong> {{ item.category }}</p>
-    </li>
-  </ul>
 </template>
 
 
 <style>
+@keyframes gentleFade {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animated-background {
+  height: 100vh;
+  width: 100%;
+  background: linear-gradient(120deg, #f0f4f8, #e0e7eb, #f0f4f8, #e0e7eb);
+  background-size: 400% 400%;
+  animation: gentleFade 20s ease infinite;
+  padding: 24px;
+}
+
 .content {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 20px;
-  margin: 10px auto;
+  margin: auto;
   max-width: 600px;
   vertical-align: auto;
   padding: 10px;
