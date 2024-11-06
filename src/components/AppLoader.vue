@@ -1,25 +1,18 @@
+<script>
+export default {
+  name: 'AppLoader',
+}
+</script>
+
+
 <template>
-  <div class="loader-overlay">
-    <div class="loader"></div>
-  </div>
+  <div class="loader"></div>
 </template>
 
 <style>
-.loader-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .loader {
-  border: 8px solid rgba(255, 255, 255, 0.3);
-  border-top: 8px solid #ffffff;
+  border: 8px solid rgba(0, 0, 0, 0.3);
+  border-top: 8px solid #000;
   border-radius: 50%;
   width: 50px;
   height: 50px;

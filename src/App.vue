@@ -1,8 +1,12 @@
 <script>
 import { ref } from 'vue';
 import { categories } from './assets/constants';
+import AppLoader from './components/AppLoader.vue';
 
 export default {
+  components: {
+    AppLoader
+  },
   setup() {
     const quote = ref({
       author: '',
@@ -12,8 +16,11 @@ export default {
     const currentCategory = ref('')
     const fetchError = ref('')
     const historyOfQuotes = ref([])
+    const loader = ref(false);
+    const succesfulCopiedMessage = ref(false)
 
     function getQuote() {
+      loader.value = true
       fetchError.value = ''
 
       if (quote.value.quote) {
@@ -45,17 +52,16 @@ export default {
         .catch(error => {
           console.error('Error: ', error);
           fetchError.value = `Something went wrong. Please try again`;
-        });
+        })
+        .finally(() => loader.value = false);
     }
 
     function copyQuote() {
       navigator.clipboard.writeText(quote.value.quote)
         .then(() => {
-          alert("Successfully copied!");
+          succesfulCopiedMessage.value = true
+          setTimeout(() => { succesfulCopiedMessage.value = false }, 2000)
         })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
     }
 
     return {
@@ -66,6 +72,8 @@ export default {
       historyOfQuotes,
       copyQuote,
       categories,
+      loader,
+      succesfulCopiedMessage
     }
   },
 }
@@ -74,17 +82,25 @@ export default {
 <template>
   <div class="animated-background">
     <div class="content">
-      <div v-if="quote.quote" class="quotes" :class="!quote.quote && 'quotes-hidden'">
+      <h2 v-if="!loader && !historyOfQuotes.length && !quote.quote" class="title">"Quotes from Great Minds:<br />
+        Inspiration
+        on Every Topic
+        <br /> Just Try!
+      </h2>
+
+      <div class="quotes" :class="quote.quote && 'quotes-visible'">
+        <p v-if="succesfulCopiedMessage" class="success-message">Succesfully copied!</p>
         <p @click="copyQuote" class="quote" title="copy this quote"> {{ quote.quote }}</p>
         <p class="author">-{{ quote.author }}</p>
         <p><strong>Category:</strong> {{ quote.category }}</p>
       </div>
 
-      <h2 v-else class="title">"Quotes from Great Minds:<br /> Inspiration on Every Topic <br /> Just Try!</h2>
+
+      <AppLoader v-if="loader" />
 
       <div class="buttons">
         <div>
-          <label for="selectCategory">Choose category of quote: </label>
+          <label for="selectCategory">Choose category of next quote: </label>
           <select v-model="category" id="selectCategory">
             <option value="">random</option>
             <option v-for="cat of categories" :key="cat" :value="cat">{{ cat }}
@@ -93,10 +109,9 @@ export default {
         </div>
 
 
-        <button class="get-quote-button" @click="getQuote">Get Quote {{ category ? `about
-          ${category}` :
-          'Random'
-          }}</button>
+        <button class="get-quote-button" @click="getQuote" :disabled="loader">
+          Get Quote {{ category ? `about ${category}` : 'Random' }}
+        </button>
 
         <p class="error" v-if="fetchError">{{ fetchError }}</p>
       </div>
@@ -140,10 +155,9 @@ export default {
 }
 
 .content {
-  position: relative;
   display: flex;
   flex-direction: column;
-  /* justify-content: space-between; */
+  justify-content: space-between;
   justify-content: center;
   align-items: center;
   gap: 40px;
@@ -155,18 +169,29 @@ export default {
 }
 
 .quotes {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 16px;
   opacity: 1;
-  transition: opacity 2s ease;
-}
-
-.quotes-hidden {
   opacity: 0;
   pointer-events: none;
+}
+
+.success-message {
+  position: absolute;
+  content: '';
+  top: -40px;
+  background-color: #cceecc;
+  padding: 8px;
+}
+
+.quotes-visible {
+  transition: opacity 1s ease;
+  opacity: 1;
+  pointer-events: all;
 }
 
 .title {
@@ -199,7 +224,6 @@ export default {
   justify-content: center;
   align-items: center;
   gap: 16px;
-  /* margin-top: 50%; */
 }
 
 .error {
