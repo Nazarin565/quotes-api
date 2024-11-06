@@ -74,38 +74,42 @@ export default {
 <template>
   <div class="animated-background">
     <div class="content">
-      <div class="quotes">
-        <p @click="copyQuote" class="quote" title="copy this quote"><strong>Quote:</strong> {{ quote.quote }}</p>
-        <p><strong>Author:</strong> {{ quote.author }}</p>
+      <div v-if="quote.quote" class="quotes" :class="!quote.quote && 'quotes-hidden'">
+        <p @click="copyQuote" class="quote" title="copy this quote"> {{ quote.quote }}</p>
+        <p class="author">-{{ quote.author }}</p>
         <p><strong>Category:</strong> {{ quote.category }}</p>
       </div>
 
-      <div>
-        <label for="selectCategory">Choose category of quote: </label>
-        <select v-model="category" id="selectCategory">
-          <option value="">random</option>
-          <option v-for="cat of categories" :key="cat" :value="cat">{{ cat }}
-          </option>
-        </select>
+      <h2 v-else class="title">"Quotes from Great Minds:<br /> Inspiration on Every Topic <br /> Just Try!</h2>
+
+      <div class="buttons">
+        <div>
+          <label for="selectCategory">Choose category of quote: </label>
+          <select v-model="category" id="selectCategory">
+            <option value="">random</option>
+            <option v-for="cat of categories" :key="cat" :value="cat">{{ cat }}
+            </option>
+          </select>
+        </div>
+
+
+        <button class="get-quote-button" @click="getQuote">Get Quote {{ category ? `about
+          ${category}` :
+          'Random'
+          }}</button>
+
+        <p class="error" v-if="fetchError">{{ fetchError }}</p>
       </div>
-
-
-      <button class="getQuote" @click="getQuote">Get Quote {{ category ? `with category
-        ${category}` :
-        'Random'
-        }}</button>
-
-      <p class="error" v-if="fetchError">{{ fetchError }}</p>
     </div>
 
-    <ul class="history" v-if="!!historyOfQuotes.length">
+    <!-- <ul class="history" v-if="!!historyOfQuotes.length">
       <strong>History of quotes:</strong>
       <li v-for="item in historyOfQuotes" :key="item.quote" class="history__item">
         <p @click="copyQuote" class="quote"><strong>Quote:</strong> {{ item.quote }}</p>
         <p><strong>Author:</strong> {{ item.author }}</p>
         <p><strong>Category:</strong> {{ item.category }}</p>
       </li>
-    </ul>
+    </ul> -->
   </div>
 </template>
 
@@ -132,35 +136,86 @@ export default {
   background-size: 400% 400%;
   animation: gentleFade 20s ease infinite;
   padding: 24px;
+  display: flex;
 }
 
 .content {
+  position: relative;
   display: flex;
   flex-direction: column;
+  /* justify-content: space-between; */
   justify-content: center;
   align-items: center;
-  gap: 20px;
+  gap: 40px;
+  height: 85%;
   margin: auto;
-  max-width: 600px;
-  vertical-align: auto;
-  padding: 10px;
+  width: 1000px;
+  padding: 24px;
   border: solid 1px black;
 }
 
 .quotes {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: 16px;
-  align-self: flex-start;
+  opacity: 1;
+  transition: opacity 2s ease;
+}
+
+.quotes-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.title {
+  text-align: center;
+  font-size: 40px;
+}
+
+.quote {
+  text-align: center;
+  font-size: 26px;
+  font-weight: 600;
+  transition-duration: 1s;
 }
 
 .quote:hover {
   text-decoration: underline;
   cursor: pointer;
+  transform: scale(1.02);
+}
+
+.author {
+  font-size: 20px;
+  font-style: italic;
+}
+
+.buttons {
+  justify-self: flex-start;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  /* margin-top: 50%; */
 }
 
 .error {
   color: red;
+}
+
+.get-quote-button {
+  padding: 16px;
+  background-color: #d0dfe8;
+  border: 2px solid black;
+  transition-duration: 0.5s;
+  cursor: pointer;
+}
+
+.get-quote-button:hover {
+  background-color: #e9e5e5;
 }
 
 .history {
