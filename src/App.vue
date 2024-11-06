@@ -9,8 +9,10 @@ export default {
       quote: '',
     })
     const category = ref('')
+    const fetchError = ref('')
 
     function getQuote() {
+      fetchError.value = ''
       quote.value = {
         author: '',
         category: '',
@@ -30,17 +32,19 @@ export default {
           return response.json();
         })
         .then(data => {
-          quote.value = data;
+          quote.value = data[0];
         })
         .catch(error => {
           console.error('Error: ', error);
+          fetchError.value = `Something went wrong. Please try again`;
         });
     }
 
     return {
       quote,
       getQuote,
-      category
+      category,
+      fetchError,
     }
   },
 }
@@ -48,7 +52,11 @@ export default {
 
 <template>
   <div class="content">
-    <p>{{ quote }}</p>
+    <div class="quotes">
+      <p><strong>Quote:</strong> {{ quote.quote }}</p>
+      <p><strong>Author:</strong> {{ quote.author }}</p>
+      <p><strong>Category:</strong> {{ quote.category }}</p>
+    </div>
 
     <div class="select-field">
       <div>
@@ -66,6 +74,8 @@ export default {
 
     <button class="getQuote" @click="getQuote">Get Quote {{ category ? `with category ${category}` : 'Random'
       }}</button>
+
+    <p class="error" v-if="fetchError">{{ fetchError }}</p>
   </div>
 
 </template>
@@ -85,9 +95,18 @@ export default {
   border: solid 1px black;
 }
 
+.quotes {
+  display: flex;
+  flex-direction: column;
+}
+
 .select-field {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.error {
+  color: red;
 }
 </style>
