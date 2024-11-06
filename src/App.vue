@@ -1,5 +1,6 @@
 <script>
 import { ref } from 'vue';
+import { categories } from './assets/constants';
 
 export default {
   setup() {
@@ -8,7 +9,7 @@ export default {
       category: '',
       quote: '',
     })
-    const category = ref('')
+    const currentCategory = ref('')
     const fetchError = ref('')
     const historyOfQuotes = ref([])
 
@@ -25,11 +26,11 @@ export default {
         quote: '',
       }
 
-      fetch('https://api.api-ninjas.com/v1/quotes?category=' + category.value, {
+      fetch('https://api.api-ninjas.com/v1/quotes?category=' + currentCategory.value, {
         method: 'GET',
         headers: {
           'X-Api-Key': 'ji7i7KVCKObnhRMtB1LRmQ==AmyCMKLfmYJsYBLJ',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         }
       })
         .then(response => {
@@ -60,10 +61,11 @@ export default {
     return {
       quote,
       getQuote,
-      category,
+      category: currentCategory,
       fetchError,
       historyOfQuotes,
       copyQuote,
+      categories,
     }
   },
 }
@@ -80,10 +82,8 @@ export default {
     <div>
       <label for="selectCategory">Choose category of quote: </label>
       <select v-model="category" id="selectCategory">
-        <option value="">Random</option>
-        <option value="age">Age</option>
-        <option value="alone">Alone</option>
-        <option value="amazing">Amazing</option>
+        <option v-for="cat of categories" :key="cat" :value="cat" class="category-option">{{ cat }}
+        </option>
       </select>
     </div>
 

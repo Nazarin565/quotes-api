@@ -1,0 +1,16 @@
+export const categories = [
+  'age',
+  'architecture',
+  'beauty',
+  'communication',
+  'dating',
+  'environmental',
+  'family',
+  'god',
+  'health',
+  'humor',
+  'knowledge',
+  'life',
+  'money',
+  'success',
+]
