@@ -82,13 +82,16 @@ export default {
     <div>
       <label for="selectCategory">Choose category of quote: </label>
       <select v-model="category" id="selectCategory">
-        <option v-for="cat of categories" :key="cat" :value="cat" class="category-option">{{ cat }}
+        <option value="">random</option>
+        <option v-for="cat of categories" :key="cat" :value="cat">{{ cat }}
         </option>
       </select>
     </div>
 
 
-    <button class="getQuote" @click="getQuote">Get Quote {{ category ? `with category ${category}` : 'Random'
+    <button class="getQuote" @click="getQuote">Get Quote {{ category ? `with category
+      ${category}` :
+      'Random'
       }}</button>
 
     <p class="error" v-if="fetchError">{{ fetchError }}</p>
