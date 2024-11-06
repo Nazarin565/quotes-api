@@ -10,14 +10,21 @@ export default {
     })
     const category = ref('')
     const fetchError = ref('')
+    const historyOfQuotes = ref([])
 
     function getQuote() {
       fetchError.value = ''
+
+      if (quote.value.quote) {
+        historyOfQuotes.value.push({ ...quote.value })
+      }
+
       quote.value = {
         author: '',
         category: '',
         quote: '',
       }
+
       fetch('https://api.api-ninjas.com/v1/quotes?category=' + category.value, {
         method: 'GET',
         headers: {
@@ -45,6 +52,7 @@ export default {
       getQuote,
       category,
       fetchError,
+      historyOfQuotes,
     }
   },
 }
@@ -78,6 +86,14 @@ export default {
     <p class="error" v-if="fetchError">{{ fetchError }}</p>
   </div>
 
+  <ul class="history" v-if="!!historyOfQuotes.length">
+    <strong>History of quotes:</strong>
+    <li v-for="item in historyOfQuotes" :key="item.quote" class="history__item">
+      <p><strong>Quote:</strong> {{ item.quote }}</p>
+      <p><strong>Author:</strong> {{ item.author }}</p>
+      <p><strong>Category:</strong> {{ item.category }}</p>
+    </li>
+  </ul>
 </template>
 
 
@@ -88,7 +104,7 @@ export default {
   justify-content: center;
   align-items: center;
   gap: 20px;
-  margin: auto;
+  margin: 10px auto;
   max-width: 600px;
   vertical-align: auto;
   padding: 10px;
@@ -98,6 +114,8 @@ export default {
 .quotes {
   display: flex;
   flex-direction: column;
+  gap: 16px;
+  align-self: flex-start;
 }
 
 .select-field {
@@ -108,5 +126,22 @@ export default {
 
 .error {
   color: red;
+}
+
+.history {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 8px;
+  border: solid 1px black;
+}
+
+.history__item {
+  margin-inline: 6px;
+  padding: 8px;
+  border: solid 1px black;
 }
 </style>
