@@ -47,12 +47,23 @@ export default {
         });
     }
 
+    function copyQuote() {
+      navigator.clipboard.writeText(quote.value.quote)
+        .then(() => {
+          alert("Successfully copied!");
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }
+
     return {
       quote,
       getQuote,
       category,
       fetchError,
       historyOfQuotes,
+      copyQuote,
     }
   },
 }
@@ -61,22 +72,19 @@ export default {
 <template>
   <div class="content">
     <div class="quotes">
-      <p><strong>Quote:</strong> {{ quote.quote }}</p>
+      <p @click="copyQuote" class="quote" title="copy this quote"><strong>Quote:</strong> {{ quote.quote }}</p>
       <p><strong>Author:</strong> {{ quote.author }}</p>
       <p><strong>Category:</strong> {{ quote.category }}</p>
     </div>
 
-    <div class="select-field">
-      <div>
-        <label for="selectCategory">Choose category of quote: </label>
-        <select v-model="category" id="selectCategory">
-          <option value="">Random</option>
-          <option value="age">Age</option>
-          <option value="alone">Alone</option>
-          <option value="amazing">Amazing</option>
-        </select>
-      </div>
-      <p v-if="category">Обрана категорія: {{ category }}</p>
+    <div>
+      <label for="selectCategory">Choose category of quote: </label>
+      <select v-model="category" id="selectCategory">
+        <option value="">Random</option>
+        <option value="age">Age</option>
+        <option value="alone">Alone</option>
+        <option value="amazing">Amazing</option>
+      </select>
     </div>
 
 
@@ -89,7 +97,7 @@ export default {
   <ul class="history" v-if="!!historyOfQuotes.length">
     <strong>History of quotes:</strong>
     <li v-for="item in historyOfQuotes" :key="item.quote" class="history__item">
-      <p><strong>Quote:</strong> {{ item.quote }}</p>
+      <p @click="copyQuote" class="quote"><strong>Quote:</strong> {{ item.quote }}</p>
       <p><strong>Author:</strong> {{ item.author }}</p>
       <p><strong>Category:</strong> {{ item.category }}</p>
     </li>
@@ -118,10 +126,9 @@ export default {
   align-self: flex-start;
 }
 
-.select-field {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.quote:hover {
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .error {
