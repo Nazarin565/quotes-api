@@ -2,10 +2,14 @@
 import { ref } from 'vue';
 import { categories } from './assets/constants';
 import AppLoader from './components/AppLoader.vue';
+import MaterialSymbolsHistoryIcon from './components/MaterialSymbolsHistoryIcon.vue';
+import MaterialSymbolsClose from './components/MaterialSymbolsClose.vue';
 
 export default {
   components: {
-    AppLoader
+    AppLoader,
+    MaterialSymbolsHistoryIcon,
+    MaterialSymbolsClose,
   },
   setup() {
     const quote = ref({
@@ -18,13 +22,14 @@ export default {
     const historyOfQuotes = ref([])
     const loader = ref(false);
     const succesfulCopiedMessage = ref(false)
+    const isHistoryOpen = ref(false);
 
     function getQuote() {
       loader.value = true
       fetchError.value = ''
 
       if (quote.value.quote) {
-        historyOfQuotes.value.push({ ...quote.value })
+        historyOfQuotes.value.unshift({ ...quote.value })
       }
 
       quote.value = {
@@ -56,8 +61,8 @@ export default {
         .finally(() => loader.value = false);
     }
 
-    function copyQuote() {
-      navigator.clipboard.writeText(quote.value.quote)
+    function copyQuote(text) {
+      navigator.clipboard.writeText(text)
         .then(() => {
           succesfulCopiedMessage.value = true
           setTimeout(() => { succesfulCopiedMessage.value = false }, 2000)
@@ -73,7 +78,8 @@ export default {
       copyQuote,
       categories,
       loader,
-      succesfulCopiedMessage
+      succesfulCopiedMessage,
+      isHistoryOpen
     }
   },
 }
@@ -82,49 +88,54 @@ export default {
 <template>
   <div class="animated-background">
     <div class="content">
-      <h2 v-if="!loader && !historyOfQuotes.length && !quote.quote" class="title">"Quotes from Great Minds:<br />
-        Inspiration
-        on Every Topic
-        <br /> Just Try!
-      </h2>
+      <p v-if="succesfulCopiedMessage" class="success-message">Succesfully copied!</p>
+      <MaterialSymbolsHistoryIcon v-if="!isHistoryOpen" @click="isHistoryOpen = true" class="history-icon"
+        role="button" />
+      <MaterialSymbolsClose v-else @click="isHistoryOpen = false" class="history-icon" role="button" />
 
-      <div class="quotes" :class="quote.quote && 'quotes-visible'">
-        <p v-if="succesfulCopiedMessage" class="success-message">Succesfully copied!</p>
-        <p @click="copyQuote" class="quote" title="copy this quote"> {{ quote.quote }}</p>
-        <p class="author">-{{ quote.author }}</p>
-        <p><strong>Category:</strong> {{ quote.category }}</p>
-      </div>
+      <div class="content__quotes">
+        <h1 v-if="!loader && !historyOfQuotes.length && !quote.quote" class="title">"Quotes from Great Minds:<br />
+          Inspiration
+          on Every Topic
+          <br /> Just Try!
+        </h1>
 
-
-      <AppLoader v-if="loader" />
-
-      <div class="buttons">
-        <div>
-          <label for="selectCategory">Choose category of next quote: </label>
-          <select v-model="category" id="selectCategory">
-            <option value="">random</option>
-            <option v-for="cat of categories" :key="cat" :value="cat">{{ cat }}
-            </option>
-          </select>
+        <div class="quotes" :class="quote.quote && 'quotes-visible'">
+          <p @click="copyQuote(quote.quote)" class="quote" title="copy this quote"> {{ quote.quote }}</p>
+          <p class="author">-{{ quote.author }}</p>
+          <p><strong>Category:</strong> {{ quote.category }}</p>
         </div>
 
 
-        <button class="get-quote-button" @click="getQuote" :disabled="loader">
-          Get Quote {{ category ? `about ${category}` : 'Random' }}
-        </button>
+        <AppLoader v-if="loader" />
 
-        <p class="error" v-if="fetchError">{{ fetchError }}</p>
+        <div class="buttons">
+          <div>
+            <label for="selectCategory">Choose category of next quote: </label>
+            <select v-model="category" id="selectCategory">
+              <option value="">random</option>
+              <option v-for="cat of categories" :key="cat" :value="cat">{{ cat }}
+              </option>
+            </select>
+          </div>
+
+
+          <button class="get-quote-button" @click="getQuote" :disabled="loader">
+            Get Quote {{ category ? `about ${category}` : 'Random' }}
+          </button>
+
+          <p class="error" v-if="fetchError">{{ fetchError }}</p>
+        </div>
       </div>
-    </div>
 
-    <!-- <ul class="history" v-if="!!historyOfQuotes.length">
-      <strong>History of quotes:</strong>
-      <li v-for="item in historyOfQuotes" :key="item.quote" class="history__item">
-        <p @click="copyQuote" class="quote"><strong>Quote:</strong> {{ item.quote }}</p>
-        <p><strong>Author:</strong> {{ item.author }}</p>
-        <p><strong>Category:</strong> {{ item.category }}</p>
-      </li>
-    </ul> -->
+      <ul class="content__history" :class="isHistoryOpen && 'content__history-visibile'">
+        <h2 class="history-title">History of quotes:</h2>
+        <li v-for="item in historyOfQuotes" :key="item.quote" class="history__item">
+          <p @click="copyQuote(item.quote)" class="quote"> {{ item.quote }} </p>
+          <p class="author"> {{ item.author }} </p>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -155,17 +166,59 @@ export default {
 }
 
 .content {
+  position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   justify-content: center;
   align-items: center;
-  gap: 40px;
   height: 85%;
   margin: auto;
   width: 1000px;
   padding: 24px;
   border: solid 1px black;
+  background-color: #f0f4f8;
+}
+
+.content__quotes {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+}
+
+.content__history {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  padding: 24px;
+  background: #f0f4f8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  overflow: auto;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.content__history-visibile {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.history-title {
+  font-size: 32px;
+  font-weight: 500;
+}
+
+.history-icon {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  cursor: pointer;
+  z-index: 20;
 }
 
 .quotes {
@@ -183,9 +236,10 @@ export default {
 .success-message {
   position: absolute;
   content: '';
-  top: -40px;
+  top: -50px;
   background-color: #cceecc;
   padding: 8px;
+  z-index: 50
 }
 
 .quotes-visible {
@@ -209,7 +263,7 @@ export default {
 .quote:hover {
   text-decoration: underline;
   cursor: pointer;
-  transform: scale(1.02);
+  transform: scale(1.01);
 }
 
 .author {
@@ -242,20 +296,20 @@ export default {
   background-color: #e9e5e5;
 }
 
-.history {
+.history__item {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  max-width: 600px;
-  margin: 0 auto;
+  width: 100%;
   padding: 8px;
+  gap: 4px;
   border: solid 1px black;
 }
 
-.history__item {
-  margin-inline: 6px;
-  padding: 8px;
-  border: solid 1px black;
+.history-quote {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 600;
 }
 </style>
