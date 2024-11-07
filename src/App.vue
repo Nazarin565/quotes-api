@@ -1,5 +1,5 @@
 <script>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { categories } from './assets/constants';
 import AppLoader from './components/AppLoader.vue';
 import MaterialSymbolsHistoryIcon from './components/MaterialSymbolsHistoryIcon.vue';
@@ -61,6 +61,8 @@ export default {
         .finally(() => loader.value = false);
     }
 
+    onMounted(() => getQuote())
+
     function copyQuote(text) {
       navigator.clipboard.writeText(text)
         .then(() => {
@@ -89,9 +91,10 @@ export default {
   <div class="animated-background">
     <div class="content">
       <p v-if="succesfulCopiedMessage" class="success-message">Succesfully copied!</p>
-      <MaterialSymbolsHistoryIcon v-if="!isHistoryOpen" @click="isHistoryOpen = true" class="history-icon"
-        role="button" />
-      <MaterialSymbolsClose v-else @click="isHistoryOpen = false" class="history-icon" role="button" />
+      <button class="history-icon" @click="isHistoryOpen = !isHistoryOpen">
+        <MaterialSymbolsHistoryIcon v-if="!isHistoryOpen" />
+        <MaterialSymbolsClose v-else />
+      </button>
 
       <div class="content__quotes">
         <h1 v-if="!loader && !historyOfQuotes.length && !quote.quote" class="title">"Quotes from Great Minds:<br />
@@ -176,7 +179,9 @@ export default {
   width: 1000px;
   padding: 24px;
   border: solid 1px black;
+  border-radius: 12px;
   background-color: #f0f4f8;
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
 }
 
 .content__quotes {
@@ -189,6 +194,7 @@ export default {
 
 .content__history {
   position: absolute;
+  border-radius: 12px;
   inset: 0;
   z-index: 10;
   padding: 24px;
@@ -218,7 +224,14 @@ export default {
   top: 24px;
   right: 24px;
   cursor: pointer;
+  background: none;
+  border: none;
   z-index: 20;
+  transition-duration: 0.5s;
+}
+
+.history-icon:hover {
+  transform: scale(1.05);
 }
 
 .quotes {
