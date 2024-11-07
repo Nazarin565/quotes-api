@@ -2,14 +2,20 @@
 import { onMounted, ref } from 'vue';
 import { categories } from './assets/constants';
 import AppLoader from './components/AppLoader.vue';
-import MaterialSymbolsHistoryIcon from './components/MaterialSymbolsHistoryIcon.vue';
-import MaterialSymbolsClose from './components/MaterialSymbolsClose.vue';
+import HistoryIcon from './icons/HistoryIcon.vue';
+import CloseIcon from './icons/CloseIcon.vue';
+import FacebookIcon from './icons/FacebookIcon.vue';
+import TelegramIcon from './icons/TelegramIcon.vue';
+import TwitterIcon from './icons/TwitterIcon.vue';
 
 export default {
   components: {
     AppLoader,
-    MaterialSymbolsHistoryIcon,
-    MaterialSymbolsClose,
+    HistoryIcon,
+    CloseIcon,
+    FacebookIcon,
+    TelegramIcon,
+    TwitterIcon,
   },
   setup() {
     const quote = ref({
@@ -23,6 +29,7 @@ export default {
     const loader = ref(false);
     const succesfulCopiedMessage = ref(false)
     const isHistoryOpen = ref(false);
+    const currentLocation = ref(window.location.href)
 
     function getQuote() {
       loader.value = true
@@ -81,7 +88,8 @@ export default {
       categories,
       loader,
       succesfulCopiedMessage,
-      isHistoryOpen
+      isHistoryOpen,
+      currentLocation,
     }
   },
 }
@@ -92,9 +100,24 @@ export default {
     <div class="content">
       <p v-if="succesfulCopiedMessage" class="success-message">Succesfully copied!</p>
       <button class="history-icon" @click="isHistoryOpen = !isHistoryOpen">
-        <MaterialSymbolsHistoryIcon v-if="!isHistoryOpen" />
-        <MaterialSymbolsClose v-else />
+        <HistoryIcon v-if="!isHistoryOpen" />
+        <CloseIcon v-else />
       </button>
+
+      <div class="social-icons">
+        <a class="icon" :href='`https://www.facebook.com/sharer/sharer.php?u=${currentLocation}`' target="_blank"
+          title="Send to Facebook">
+          <FacebookIcon />
+        </a>
+        <a class="icon" :href="`https://twitter.com/intent/tweet?text=${quote.quote} -${quote.author}`" target="_blank"
+          title="Send to Twitter">
+          <TwitterIcon />
+        </a>
+        <a class="icon" :href="`https://t.me/share/url?url=${quote.quote} -${quote.author}`" target="_blank"
+          title="Send to Telegram">
+          <TelegramIcon />
+        </a>
+      </div>
 
       <div class="content__quotes">
         <h1 v-if="!loader && !historyOfQuotes.length && !quote.quote" class="title">"Quotes from Great Minds:<br />
@@ -234,6 +257,25 @@ export default {
   transform: scale(1.05);
 }
 
+.social-icons {
+  position: absolute;
+  content: '';
+  top: 24px;
+  left: 24px;
+  display: flex;
+  gap: 8px;
+}
+
+.icon {
+  color: black;
+  transition-duration: 0.5s;
+  padding: 4px;
+}
+
+.icon:hover {
+  transform: scale(1.05);
+}
+
 .quotes {
   position: relative;
   display: flex;
@@ -306,7 +348,7 @@ export default {
 }
 
 .get-quote-button:hover {
-  background-color: #e9e5e5;
+  background-color: #f0f4f8;
 }
 
 .history__item {
