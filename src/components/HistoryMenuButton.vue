@@ -18,7 +18,7 @@ defineProps({
 defineEmits(['toogleHistoryMenu']);
 </script>
 
-<style>
+<style scoped>
 .history-icon {
   position: absolute;
   top: 24px;

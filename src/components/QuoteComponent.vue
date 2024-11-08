@@ -16,7 +16,7 @@ defineProps({
 defineEmits(['copyQuote']);
 </script>
 
-<style>
+<style scoped>
 .quotes {
   position: relative;
   display: flex;

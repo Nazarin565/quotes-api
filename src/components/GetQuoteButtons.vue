@@ -39,7 +39,7 @@ defineProps({
 defineEmits(['update:modelValue', 'getQuote']);
 </script>
 
-<style>
+<style scoped>
 .buttons {
   justify-self: flex-start;
   display: flex;

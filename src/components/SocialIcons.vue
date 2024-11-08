@@ -31,7 +31,7 @@ defineProps({
 const currentLocation = ref(window.location.href);
 </script>
 
-<style>
+<style scoped>
 .social-icons {
   position: absolute;
   content: '';

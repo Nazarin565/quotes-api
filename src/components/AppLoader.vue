@@ -5,7 +5,7 @@
 <script setup>
 </script>
 
-<style>
+<style scoped>
 .loader {
   border: 8px solid rgba(0, 0, 0, 0.3);
   border-top: 8px solid #000;

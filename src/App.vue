@@ -78,7 +78,7 @@ function copyQuote(text) {
 </script>
 
 
-<style>
+<style scoped>
 @keyframes gentleFade {
   0% {
     background-position: 0% 50%;

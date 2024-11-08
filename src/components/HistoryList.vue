@@ -22,7 +22,7 @@ defineProps({
 defineEmits(['copyQuote'])
 </script>
 
-<style>
+<style scoped>
 .content__history {
   position: absolute;
   border-radius: 12px;

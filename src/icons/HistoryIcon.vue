@@ -5,8 +5,5 @@
   </svg>
 </template>
 
-<script>
-export default {
-  name: 'HistoryIcon',
-};
+<script setup>
 </script>

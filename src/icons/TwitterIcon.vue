@@ -5,8 +5,5 @@
   </svg>
 </template>
 
-<script>
-export default {
-  name: 'TwitterIcon',
-};
+<script setup>
 </script>
