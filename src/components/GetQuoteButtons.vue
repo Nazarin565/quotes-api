@@ -18,32 +18,25 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { categories } from '@/assets/constants';
 
-export default {
-  name: 'GetQuoteButtons',
-  props: {
-    modelValue: {
-      type: String,
-      required: true
-    },
-    loader: {
-      type: Boolean,
-      required: true,
-    },
-    fetchError: {
-      type: String,
-      required: true
-    }
+defineProps({
+  modelValue: {
+    type: String,
+    required: true
   },
-  emits: ['update:modelValue', 'getQuote'],
-  setup() {
-    return {
-      categories
-    }
+  loader: {
+    type: Boolean,
+    required: true,
+  },
+  fetchError: {
+    type: String,
+    required: true
   }
-}
+});
+
+defineEmits(['update:modelValue', 'getQuote']);
 </script>
 
 <style>

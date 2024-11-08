@@ -8,21 +8,18 @@
   </ul>
 </template>
 
-<script>
-export default {
-  name: 'HistoryList',
-  props: {
-    isHistoryOpen: {
-      type: Boolean,
-      required: true,
-    },
-    historyOfQuotes: {
-      type: Object,
-      required: true,
-    }
+<script setup>
+defineProps({
+  isHistoryOpen: {
+    type: Boolean,
+    required: true,
   },
-  emits: ['copyQuote'],
-}
+  historyOfQuotes: {
+    type: Object,
+    required: true,
+  }
+});
+defineEmits(['copyQuote'])
 </script>
 
 <style>

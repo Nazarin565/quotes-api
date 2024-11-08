@@ -15,34 +15,20 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref } from 'vue';
 import FacebookIcon from '@/icons/FacebookIcon.vue';
 import TelegramIcon from '@/icons/TelegramIcon.vue';
 import TwitterIcon from '@/icons/TwitterIcon.vue';
 
-export default {
-  name: 'SocialIcons',
-  components: {
-    FacebookIcon,
-    TelegramIcon,
-    TwitterIcon,
+defineProps({
+  quote: {
+    type: Object,
+    required: true,
   },
-  props: {
-    quote: {
-      type: Object,
-      required: true,
-    },
-  },
-  setup() {
-    const currentLocation = ref(window.location.href)
+});
 
-    return {
-      currentLocation
-    }
-  }
-
-}
+const currentLocation = ref(window.location.href);
 </script>
 
 <style>

@@ -6,17 +6,14 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'QuoteComponent',
-  props: {
-    quote: {
-      type: Object,
-      required: true,
-    }
-  },
-  emits: ['copyQuote']
-}
+<script setup>
+defineProps({
+  quote: {
+    type: Object,
+    required: true,
+  }
+});
+defineEmits(['copyQuote']);
 </script>
 
 <style>

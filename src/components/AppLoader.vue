@@ -1,13 +1,9 @@
-<script>
-export default {
-  name: 'AppLoader',
-}
-</script>
-
-
 <template>
   <div class="loader"></div>
 </template>
+
+<script setup>
+</script>
 
 <style>
 .loader {

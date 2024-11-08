@@ -5,24 +5,17 @@
   </button>
 </template>
 
-<script>
+<script setup>
 import HistoryIcon from '@/icons/HistoryIcon.vue';
 import CloseIcon from '@/icons/CloseIcon.vue';
 
-export default {
-  name: 'HistoryMenuButton',
-  components: {
-    HistoryIcon,
-    CloseIcon
-  },
-  props: {
-    isHistoryOpen: {
-      type: Boolean,
-      required: true,
-    }
-  },
-  emits: ['toogleHistoryMenu']
-}
+defineProps({
+  isHistoryOpen: {
+    type: Boolean,
+    required: true,
+  }
+});
+defineEmits(['toogleHistoryMenu']);
 </script>
 
 <style>

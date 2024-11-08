@@ -1,85 +1,3 @@
-<script>
-import { onMounted, ref } from 'vue';
-import AppLoader from './components/AppLoader.vue';
-import HistoryList from './components/HistoryList.vue';
-import GetQuoteButtons from './components/GetQuoteButtons.vue';
-import SocialIcons from './components/SocialIcons.vue';
-import QuoteComponent from './components/QuoteComponent.vue';
-import HistoryMenuButton from './components/HistoryMenuButton.vue';
-import { fetchData } from './assets/fetchData';
-
-export default {
-  components: {
-    AppLoader,
-    HistoryList,
-    GetQuoteButtons,
-    SocialIcons,
-    QuoteComponent,
-    HistoryMenuButton
-  },
-  setup() {
-    const quote = ref({
-      author: '',
-      category: '',
-      quote: '',
-    })
-    const currentCategory = ref('')
-    const fetchError = ref('')
-    const historyOfQuotes = ref([])
-    const loader = ref(false);
-    const succesfulCopiedMessage = ref(false)
-    const isHistoryOpen = ref(false);
-
-    function getQuote() {
-      loader.value = true
-      fetchError.value = ''
-
-      if (quote.value.quote) {
-        historyOfQuotes.value.unshift({ ...quote.value })
-      }
-
-      quote.value = {
-        author: '',
-        category: '',
-        quote: '',
-      }
-
-      fetchData(currentCategory)
-        .then(data => {
-          quote.value = data[0];
-        })
-        .catch(error => {
-          console.error('Error: ', error);
-          fetchError.value = `Something went wrong. Please try again`;
-        })
-        .finally(() => loader.value = false);
-    }
-
-    onMounted(() => getQuote())
-
-    function copyQuote(text) {
-      navigator.clipboard.writeText(text)
-        .then(() => {
-          succesfulCopiedMessage.value = true
-          setTimeout(() => { succesfulCopiedMessage.value = false }, 2000)
-        })
-    }
-
-    return {
-      quote,
-      getQuote,
-      currentCategory,
-      fetchError,
-      historyOfQuotes,
-      copyQuote,
-      loader,
-      succesfulCopiedMessage,
-      isHistoryOpen,
-    }
-  },
-}
-</script>
-
 <template>
   <div class="animated-background">
     <main class="content">
@@ -100,6 +18,64 @@ export default {
     </main>
   </div>
 </template>
+
+<script setup>
+import { onMounted, ref } from 'vue';
+import AppLoader from './components/AppLoader.vue';
+import HistoryList from './components/HistoryList.vue';
+import GetQuoteButtons from './components/GetQuoteButtons.vue';
+import SocialIcons from './components/SocialIcons.vue';
+import QuoteComponent from './components/QuoteComponent.vue';
+import HistoryMenuButton from './components/HistoryMenuButton.vue';
+import { fetchData } from './assets/fetchData';
+
+const quote = ref({
+  author: '',
+  category: '',
+  quote: '',
+})
+const currentCategory = ref('')
+const fetchError = ref('')
+const historyOfQuotes = ref([])
+const loader = ref(false);
+const succesfulCopiedMessage = ref(false)
+const isHistoryOpen = ref(false);
+
+function getQuote() {
+  loader.value = true
+  fetchError.value = ''
+
+  if (quote.value.quote) {
+    historyOfQuotes.value.unshift({ ...quote.value })
+  }
+
+  quote.value = {
+    author: '',
+    category: '',
+    quote: '',
+  }
+
+  fetchData(currentCategory)
+    .then(data => {
+      quote.value = data[0];
+    })
+    .catch(error => {
+      console.error('Error: ', error);
+      fetchError.value = `Something went wrong. Please try again`;
+    })
+    .finally(() => loader.value = false);
+}
+
+onMounted(() => getQuote())
+
+function copyQuote(text) {
+  navigator.clipboard.writeText(text)
+    .then(() => {
+      succesfulCopiedMessage.value = true
+      setTimeout(() => { succesfulCopiedMessage.value = false }, 2000)
+    })
+}
+</script>
 
 
 <style>
