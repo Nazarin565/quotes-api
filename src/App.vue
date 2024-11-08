@@ -6,6 +6,7 @@ import GetQuoteButtons from './components/GetQuoteButtons.vue';
 import SocialIcons from './components/SocialIcons.vue';
 import QuoteComponent from './components/QuoteComponent.vue';
 import HistoryMenuButton from './components/HistoryMenuButton.vue';
+import { fetchData } from './assets/fetchData';
 
 export default {
   components: {
@@ -43,19 +44,7 @@ export default {
         quote: '',
       }
 
-      fetch('https://api.api-ninjas.com/v1/quotes?category=' + currentCategory.value, {
-        method: 'GET',
-        headers: {
-          'X-Api-Key': 'ji7i7KVCKObnhRMtB1LRmQ==AmyCMKLfmYJsYBLJ',
-          'Content-Type': 'application/json',
-        }
-      })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error("Responce isn't ok");
-          }
-          return response.json();
-        })
+      fetchData(currentCategory)
         .then(data => {
           quote.value = data[0];
         })
@@ -95,7 +84,7 @@ export default {
   <div class="animated-background">
     <main class="content">
       <p v-if="succesfulCopiedMessage" class="success-message">Succesfully copied!</p>
-      <HistoryMenuButton @toogleHistoryMenu="isHistoryOpen = !isHistoryOpen" />
+      <HistoryMenuButton @toogleHistoryMenu="isHistoryOpen = !isHistoryOpen" :isHistoryOpen="isHistoryOpen" />
 
       <SocialIcons :quote="quote" />
 
