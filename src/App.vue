@@ -36,7 +36,7 @@ const quote = ref({
 })
 const currentCategory = ref('')
 const fetchError = ref('')
-const historyOfQuotes = ref([])
+const historyOfQuotes = JSON.parse(localStorage.getItem('history')) || []
 const loader = ref(false);
 const succesfulCopiedMessage = ref(false)
 const isHistoryOpen = ref(false);
@@ -46,7 +46,8 @@ function getQuote() {
   fetchError.value = ''
 
   if (quote.value.quote) {
-    historyOfQuotes.value.unshift({ ...quote.value })
+    historyOfQuotes.unshift({ ...quote.value })
+    localStorage.setItem('history', JSON.stringify(historyOfQuotes))
   }
 
   quote.value = {
